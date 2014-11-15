@@ -1,4 +1,12 @@
+
+
 from distutils.core import setup
+import os
+
+
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
 
 setup(
     name='clocked',
@@ -10,5 +18,6 @@ setup(
     url='https://github.com/JesseBuesking/clocked',
     download_url='https://github.com/JesseBuesking/clocked/tarball/0.1',
     keywords=['benchmark', 'benchmarking', 'profiler', 'profiling'],
-    classifiers=[],
+    long_description=read('readme.md'),
+    classifiers=[]
 )
