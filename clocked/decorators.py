@@ -5,6 +5,20 @@ import inspect
 from clocked.clockit import Clocked
 
 
+def _create_function_wrapper(obj):
+    def wrapper(*args, **kwargs):
+        with Clocked(obj.__name__):
+            return obj(*args, **kwargs)
+    return wrapper
+
+
+def _create_method_wrapper(obj):
+    def wrapper(*args, **kwargs):
+        with Clocked(obj.__name__):
+            return obj.__func__(*args, **kwargs)
+    return wrapper
+
+
 def clocked(obj):
     """
     Clocked decorator. Put this on a class or and individual function for it's
@@ -17,17 +31,11 @@ def clocked(obj):
         raise Exception('unsupported type {}'.format(type(obj)))
 
     if _is_func:
-        def wrapper(*args, **kwargs):
-            with Clocked(obj.__name__):
-                return obj(*args, **kwargs)
-        return wrapper
+        return _create_function_wrapper(obj)
     elif _is_class:
         for name, method in inspect.getmembers(obj, inspect.ismethod):
             if inspect.ismethod(method) or inspect.isfunction(method):
-                def wrapper(*args, **kwargs):
-                    with Clocked(method.__name__):
-                        return method.__func__(*args, **kwargs)
-
+                wrapper = _create_method_wrapper(method)
                 setattr(obj, name, wrapper)
 
     return obj
