@@ -59,8 +59,12 @@ def clocked(obj):
     if _is_func:
         return _create_function_wrapper(obj)
     elif _is_class:
-        for name, method in inspect.getmembers(obj, inspect.ismethod):
-            if inspect.ismethod(method) or inspect.isfunction(method):
+        for name, method in inspect.getmembers(obj):
+            if inspect.isfunction(method):
+                wrapper = _create_function_wrapper(method)
+                staticmethod(wrapper)
+                setattr(obj, name, staticmethod(wrapper))
+            elif inspect.ismethod(method):
                 wrapper = _create_method_wrapper(method)
                 setattr(obj, name, wrapper)
 

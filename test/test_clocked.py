@@ -99,7 +99,6 @@ class TestDecorators(unittest.TestCase):
         )
 
     def test_function_decorator(self):
-        """ Tests the function decorator @clocked. """
         Clocked.initialize('test function decorator')
 
         TestDecorators.TestFunctionObj.delay_method()
@@ -117,7 +116,6 @@ class TestDecorators(unittest.TestCase):
             sleep(.02)
 
     def test_class_decorator(self):
-        """ Tests the class decorator @clocked. """
         Clocked.initialize('test class decorator')
 
         TestDecorators.TestClassObj.delay_method()
@@ -135,7 +133,6 @@ class TestDecorators(unittest.TestCase):
             sleep(.02)
 
     def test_function_and_class_decorators(self):
-        """ Tests applying both function and class decorators @clocked. """
         Clocked.initialize('test function and class decorators')
 
         TestDecorators.TestFunctionAndClassObj.delay_method()
@@ -154,7 +151,6 @@ class TestDecorators(unittest.TestCase):
             sleep(.02)
 
     def test_not_classmethods(self):
-        """ Tests applying both function and class decorators @clocked. """
         Clocked.initialize('test function and class decorators')
 
         to = TestDecorators.TestNotClassmethods()
@@ -169,4 +165,21 @@ class TestDecorators(unittest.TestCase):
     class TestNotClassmethods(object):
 
         def delay_method(self):
+            sleep(.02)
+
+    def test_static_method(self):
+        Clocked.initialize('test function and class decorators')
+
+        TestDecorators.TestStaticMethod.delay_method()
+        t = [i for i in Clocked.get('delay_method')]
+        self.assertEqual(1, len(t))
+        t = t[0]
+        self._assert(20-2, t.duration_milliseconds, 20+2)
+
+    # noinspection PyDocstring
+    @clocked
+    class TestStaticMethod(object):
+
+        @staticmethod
+        def delay_method():
             sleep(.02)

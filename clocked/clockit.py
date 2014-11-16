@@ -20,7 +20,7 @@ class Clocked(object):
         :param str session_name: the name for this session
         """
         Settings.ensure_profiler_provider()
-        Settings._profiler_provider.start(session_name)
+        Settings.profiler_provider.start(session_name)
 
     def __init__(self, name):
         self._name = name
@@ -45,7 +45,7 @@ class Clocked(object):
         # self.stop()
         profiler = Profiler.current()
         if profiler is not None:
-            profiler.get_head().stop()
+            profiler.head.stop()
 
         if _type:
             # re-raise any exceptions
@@ -93,7 +93,7 @@ class Clocked(object):
                 timing.name,
                 round(dm, 1)
             ))
-            if timing.has_children():
+            if timing.has_children:
                 for child in timing.children:
                     _print(child, depth + 1)
 
@@ -162,7 +162,7 @@ class Clocked(object):
                 max(tup[2], dm),
                 tup[3] + 1
             )
-            if timing.has_children():
+            if timing.has_children:
                 for child in timing.children:
                     _agg(child, depth + 1)
 

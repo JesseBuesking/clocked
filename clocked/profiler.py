@@ -3,6 +3,7 @@
 
 from clocked.settings import Settings
 from clocked.timing import Timing
+import cuuid
 
 
 class Profiler(object):
@@ -13,36 +14,21 @@ class Profiler(object):
 
     def __init__(self, name):
         from datetime import datetime
-        import uuid
-        self.id = uuid.uuid1()
+        self.id = cuuid.uuid1()
         self.started = datetime.utcnow()
-        self._sw = Settings.stopwatch_provider()
-        self._head = None
-        self.set_root(Timing(self, None, name))
+        self.sw = Settings.stopwatch_provider()
+        self.head = None
+        self.root = Timing(self, None, name)
 
     @property
-    def head(self):
-        """
-        Gets the head.
-        """
-        return self._head
-
-    @head.setter
-    def head(self, head):
-        """
-        Sets the head.
-
-        :param head: the head item
-        """
-        self._head = head
-
-    def get_root(self):
+    def root(self):
         """
         Gets the root timing.
         """
         return self._root
 
-    def set_root(self, root):
+    @root.setter
+    def root(self, root):
         """
         Sets the root timing.
 
@@ -51,7 +37,7 @@ class Profiler(object):
         self._root = root
         self.root_timing_id = root.id
 
-        if not self._root.has_children():
+        if not self._root.has_children:
             return
 
         timings = [self._root]
@@ -59,32 +45,27 @@ class Profiler(object):
         while 0 < len(timings):
             timing = timings.pop()
 
-            if not timing.has_children():
+            if not timing.has_children:
                 continue
 
             for i in range(len(timing.children)):
                 timing.children[i].parent_timing = timing
                 timings.append(timing.children[i])
 
+    @property
     def elapsed_milliseconds(self):
         """
         Gets milliseconds that have elapsed.
         """
-        return self._sw.elapsed_milliseconds
+        return self.sw.elapsed_milliseconds
 
-    def get_stopwatch(self):
-        """
-        Gets the underlying StopWatch.
-        """
-        return self._sw
-
-    @classmethod
-    def current(cls):
+    @staticmethod
+    def current():
         """
         Gets the currently running Profiler; None if no Profiler was started.
         """
         Settings.ensure_profiler_provider()
-        return Settings._profiler_provider.get_current_profiler()
+        return Settings.profiler_provider.get_current_profiler()
 
     def start(self, session_name=None):
         """
@@ -94,14 +75,14 @@ class Profiler(object):
         :param str session_name: an optional name to give to the session
         """
         Settings.ensure_profiler_provider()
-        return Settings._profiler_provider.start(session_name)
+        return Settings.profiler_provider.start(session_name)
 
     def stop(self):
         """
         Ends the current profiling session, if one exists.
         """
         Settings.ensure_profiler_provider()
-        Settings._profiler_provider.stop()
+        Settings.profiler_provider.stop()
 
     @classmethod
     def step_static(cls, name):
@@ -114,9 +95,9 @@ class Profiler(object):
         return cls.current().step(name)
 
     def __str__(self):
-        if self.get_root() is not None:
+        if self.root is not None:
             return '{} ({} ms)'.format(
-                self.get_root().name,
+                self.root.name,
                 self.duration_milliseconds
             )
         else:
@@ -130,13 +111,13 @@ class Profiler(object):
         Walks the Timing hierarchy contained in this profiler, starting with
         root, and returns each Timing found.
         """
-        timings = [self.get_root()]
+        timings = [self.root]
 
         while 0 < len(timings):
             timing = timings.pop()
             yield timing
 
-            if timing.has_children():
+            if timing.has_children:
                 for child in timing.children:
                     timings.append(child)
 
@@ -159,11 +140,11 @@ class Profiler(object):
 
     def stop_impl(self):
         """ Stops the Profiler (all Timings in the hierarchy). """
-        if not self._sw.is_running:
+        if not self.sw.is_running:
             return False
 
-        self._sw.stop()
-        self.duration_milliseconds = self.elapsed_milliseconds()
+        self.sw.stop()
+        self.duration_milliseconds = self.elapsed_milliseconds
 
         for timing in self.get_timing_hierarchy():
             timing.stop()
@@ -176,4 +157,4 @@ class Profiler(object):
 
         :param float start: a millisecond offset
         """
-        return self.elapsed_milliseconds() - start
+        return self.elapsed_milliseconds - start

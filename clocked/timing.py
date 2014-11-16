@@ -3,15 +3,20 @@ An individual profiling step that can contain child steps.
 """
 
 
-import uuid
+import cuuid
 
 
 class Timing(object):
     """ An individual profiling step that can contain child steps. """
 
+    __slots__ = ('id', 'parent_timing', 'profiler', 'parent', 'name', 'start',
+                 'min_save_ms', 'include', 'include_children_with_min_save',
+                 'start_milliseconds', 'children', 'custom_timings',
+                 'duration_milliseconds')
+
     def __init__(self, profiler, parent, name, min_save_ms=None,
                  include_children_with_min_save=False):
-        self.id = uuid.uuid1()
+        self.id = cuuid.uuid1()
         self.parent_timing = None
         self.profiler = profiler
         self.profiler.head = self
@@ -21,7 +26,7 @@ class Timing(object):
             parent.add_child(self)
 
         self.name = name
-        self.start = profiler.elapsed_milliseconds()
+        self.start = profiler.elapsed_milliseconds
         self.min_save_ms = min_save_ms
         self.include_children_with_min_save = include_children_with_min_save
         self.start_milliseconds = self.start
@@ -43,12 +48,14 @@ class Timing(object):
 
         return False
 
+    @property
     def has_children(self):
         """
         Gets a value indicating whether this timing has inner timing steps.
         """
         return self.children is not None and 0 < len(self.children)
 
+    @property
     def is_root(self):
         """
         Gets a value indicating whether this timing is the first one created
@@ -65,7 +72,7 @@ class Timing(object):
         if result is None:
             result = 0.0
 
-        if self.has_children():
+        if self.has_children:
             for child in self.children:
                 cm = child.duration_milliseconds
                 if cm is None:
@@ -129,8 +136,6 @@ class Timing(object):
 
         self.children.append(timing)
         timing.parent_timing = self
-        timing.parent_timing_id = self.id
-        timing.profiler_id = self.profiler.id
 
     def remove_child(self, timing):
         """

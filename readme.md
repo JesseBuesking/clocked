@@ -105,3 +105,11 @@ loop 2 (1.0 ms [0.2, 0.3], 4 hits)
 loop 1 (0.2 ms [0.2, 0.2], 1 hits)
 test raw simple (0.0 ms [0.0, 0.0], 1 hits)
 """
+```
+
+Performance
+-----------
+
+To improve performance when testing single-threaded applications,
+enable faster uuid generation by setting
+``clocked.config.allow_thread_unsafe_uuid = True``
