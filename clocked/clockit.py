@@ -102,7 +102,7 @@ class Clocked(object):
         output_method('')
         output_method(header)
         output_method('-' * len(header))
-        _print(profiler.get_root(), 0)
+        _print(profiler.root, 0)
 
     @classmethod
     def hotspot_report(cls, output_method=None, limit=None):
@@ -168,7 +168,7 @@ class Clocked(object):
 
         profiler = Profiler.current()
 
-        _agg(profiler.get_root(), 0)
+        _agg(profiler.root, 0)
 
         tups = [i for i in aggregates.iteritems()]
         tups.sort(key=lambda x: x[1][0], reverse=True)

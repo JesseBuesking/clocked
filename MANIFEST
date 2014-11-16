@@ -3,6 +3,8 @@ setup.cfg
 setup.py
 clocked\__init__.py
 clocked\clockit.py
+clocked\config.py
+clocked\cuuid.py
 clocked\decorators.py
 clocked\profiler.py
 clocked\profiler_provider.py
