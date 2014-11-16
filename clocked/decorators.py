@@ -2,6 +2,7 @@
 
 
 import inspect
+import new
 from clocked.clockit import Clocked
 
 
@@ -13,9 +14,15 @@ def _create_function_wrapper(obj):
 
 
 def _create_method_wrapper(obj):
-    def wrapper(*args, **kwargs):
-        with Clocked(obj.__name__):
-            return obj.__func__(*args, **kwargs)
+    if obj.im_self is not None:
+        def wrapper(*args, **kwargs):
+            with Clocked(obj.__name__):
+                return obj.__func__(*args, **kwargs)
+        wrapper = new.instancemethod(wrapper, obj.im_self)
+    else:
+        def wrapper(*args, **kwargs):
+            with Clocked(obj.__name__):
+                return obj.__func__(*args, **kwargs)
     return wrapper
 
 

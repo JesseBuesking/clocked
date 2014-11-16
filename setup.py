@@ -15,7 +15,7 @@ def read(fname):
 setup(
     name='clocked',
     packages=['clocked'],
-    version='0.4',
+    version='0.5',
     description='python library for high level profiling',
     author='Jesse Buesking',
     author_email='jessebuesking+pypi@gmail.com',

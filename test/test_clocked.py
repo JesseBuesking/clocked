@@ -102,8 +102,7 @@ class TestDecorators(unittest.TestCase):
         """ Tests the function decorator @clocked. """
         Clocked.initialize('test function decorator')
 
-        to = TestDecorators.TestFunctionObj()
-        to.delay_method()
+        TestDecorators.TestFunctionObj.delay_method()
         t = [i for i in Clocked.get('delay_method')]
         self.assertEqual(1, len(t))
         t = t[0]
@@ -121,8 +120,7 @@ class TestDecorators(unittest.TestCase):
         """ Tests the class decorator @clocked. """
         Clocked.initialize('test class decorator')
 
-        to = TestDecorators.TestClassObj()
-        to.delay_method()
+        TestDecorators.TestClassObj.delay_method()
         t = [i for i in Clocked.get('delay_method')]
         self.assertEqual(1, len(t))
         t = t[0]
@@ -140,8 +138,7 @@ class TestDecorators(unittest.TestCase):
         """ Tests applying both function and class decorators @clocked. """
         Clocked.initialize('test function and class decorators')
 
-        to = TestDecorators.TestFunctionAndClassObj()
-        to.delay_method()
+        TestDecorators.TestFunctionAndClassObj.delay_method()
         t = [i for i in Clocked.get('delay_method')]
         self.assertEqual(1, len(t))
         t = t[0]
@@ -154,4 +151,22 @@ class TestDecorators(unittest.TestCase):
         @classmethod
         @clocked
         def delay_method(cls):
+            sleep(.02)
+
+    def test_not_classmethods(self):
+        """ Tests applying both function and class decorators @clocked. """
+        Clocked.initialize('test function and class decorators')
+
+        to = TestDecorators.TestNotClassmethods()
+        to.delay_method()
+        t = [i for i in Clocked.get('delay_method')]
+        self.assertEqual(1, len(t))
+        t = t[0]
+        self._assert(20-2, t.duration_milliseconds, 20+2)
+
+    # noinspection PyDocstring
+    @clocked
+    class TestNotClassmethods(object):
+
+        def delay_method(self):
             sleep(.02)
