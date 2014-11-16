@@ -78,6 +78,12 @@ class TestClocked(unittest.TestCase):
         e = expected_total_time
         self._assert(e - d, total, e + d)
 
+    def test_raise(self):
+        def raises():
+            with Clocked('test exception'):
+                raise ValueError('some value error')
+        self.assertRaises(ValueError, raises)
+
 
 # noinspection PyDocstring
 class TestDecorators(unittest.TestCase):

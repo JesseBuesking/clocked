@@ -35,6 +35,7 @@ class Clocked(object):
         else:
             return profiler.step_impl(self._name)
 
+    # noinspection PyUnusedLocal
     def __exit__(self, _type, value, traceback):
         """
         End profiling step timing.
@@ -48,7 +49,7 @@ class Clocked(object):
 
         if _type:
             # re-raise any exceptions
-            raise type, value, traceback
+            raise
 
     @classmethod
     def get(cls, name):
