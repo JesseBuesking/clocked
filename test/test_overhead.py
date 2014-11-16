@@ -10,7 +10,7 @@ from clocked.profiler_provider import ProfilerProvider
 from clocked.settings import Settings
 
 
-ITERATIONS = 200
+ITERATIONS = 100000
 
 
 class TestClocked(unittest.TestCase):
@@ -30,16 +30,12 @@ class TestClocked(unittest.TestCase):
         def _test():
             # noinspection PyUnusedLocal
             s = "test"
-        for i in range(ITERATIONS):
-            _test()
         _test()
 
     def _without(self):
         def _test():
             # noinspection PyUnusedLocal
             s = "test"
-        for i in range(ITERATIONS):
-            _test()
         _test()
 
     def test_comparison_normal_uuid(self):
@@ -59,17 +55,20 @@ class TestClocked(unittest.TestCase):
         with_off = self.get_with_off()
         with_on = self.get_with_on()
 
-        print('without: {} ms ({} per ms)'.format(
+        print('without: {} ms ({} per ms; {} ms per)'.format(
             round(without * 1000.0, 2),
-            round(ITERATIONS / (without * 1000.0), 2)
+            round(ITERATIONS / (without * 1000.0), 2),
+            round((without * 1000.0) / ITERATIONS, 4)
         ))
-        print('with_off: {} ms ({} per ms)'.format(
+        print('with_off: {} ms ({} per ms; {} ms per)'.format(
             round(with_off * 1000.0, 2),
-            round(ITERATIONS / (with_off * 1000.0), 2)
+            round(ITERATIONS / (with_off * 1000.0), 2),
+            round((with_off * 1000.0) / ITERATIONS, 4)
         ))
-        print('with_on: {} ms ({} per ms)'.format(
+        print('with_on: {} ms ({} per ms; {} ms per)'.format(
             round(with_on * 1000.0, 2),
-            round(ITERATIONS / (with_on * 1000.0), 2)
+            round(ITERATIONS / (with_on * 1000.0), 2),
+            round((with_on * 1000.0) / ITERATIONS, 4)
         ))
         print('ratios: {} -> {} -> {}'.format(
             round(with_on / without, 1),
@@ -79,7 +78,7 @@ class TestClocked(unittest.TestCase):
 
     def get_without(self):
         t = timeit.Timer(self._without)
-        t.timeit(100)
+        t.timeit(ITERATIONS)
         elapsed = t.timer()
         return elapsed
 
@@ -87,13 +86,13 @@ class TestClocked(unittest.TestCase):
         Settings._profiler_provider = None
         ProfilerProvider._profiler = None
         t = timeit.Timer(self._with)
-        t.timeit(100)
+        t.timeit(ITERATIONS)
         elapsed = t.timer()
         return elapsed
 
     def get_with_on(self):
         Clocked.initialize('template')
         t = timeit.Timer(self._with)
-        t.timeit(100)
+        t.timeit(ITERATIONS)
         elapsed = t.timer()
         return elapsed
