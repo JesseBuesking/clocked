@@ -20,13 +20,15 @@ class Profiler(object):
         self._head = None
         self.set_root(Timing(self, None, name))
 
-    def get_head(self):
+    @property
+    def head(self):
         """
         Gets the head.
         """
         return self._head
 
-    def set_head(self, head):
+    @head.setter
+    def head(self, head):
         """
         Sets the head.
 
@@ -149,7 +151,7 @@ class Profiler(object):
         """
         return Timing(
             self,
-            self.get_head(),
+            self.head,
             name,
             min_save_ms,
             include_children_with_min_save

@@ -3,26 +3,45 @@
 
 import inspect
 import new
-from clocked.clockit import Clocked
+from clocked.profiler_provider import ProfilerProvider
 
 
 def _create_function_wrapper(obj):
     def wrapper(*args, **kwargs):
-        with Clocked(obj.__name__):
+        profiler = ProfilerProvider.get_current_profiler()
+        if profiler is None:
             return obj(*args, **kwargs)
+        else:
+            profiler.step_impl(obj.__name__)
+            ret = obj(*args, **kwargs)
+            profiler.head.stop()
+            return ret
+
     return wrapper
 
 
 def _create_method_wrapper(obj):
     if obj.im_self is not None:
         def wrapper(*args, **kwargs):
-            with Clocked(obj.__name__):
+            profiler = ProfilerProvider.get_current_profiler()
+            if profiler is None:
                 return obj.__func__(*args, **kwargs)
+            else:
+                profiler.step_impl(obj.__name__)
+                ret = obj.__func__(*args, **kwargs)
+                profiler.head.stop()
+                return ret
         wrapper = new.instancemethod(wrapper, obj.im_self)
     else:
         def wrapper(*args, **kwargs):
-            with Clocked(obj.__name__):
+            profiler = ProfilerProvider.get_current_profiler()
+            if profiler is None:
                 return obj.__func__(*args, **kwargs)
+            else:
+                profiler.step_impl(obj.__name__)
+                ret = obj.__func__(*args, **kwargs)
+                profiler.head.stop()
+                return ret
     return wrapper
 
 

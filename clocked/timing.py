@@ -14,7 +14,7 @@ class Timing(object):
         self.id = uuid.uuid1()
         self.parent_timing = None
         self.profiler = profiler
-        self.profiler.set_head(self)
+        self.profiler.head = self
 
         if parent is not None:
             # root will have no parent
@@ -106,7 +106,7 @@ class Timing(object):
             self.start_milliseconds
         )
 
-        self.profiler.set_head(self.parent_timing)
+        self.profiler.head = self.parent_timing
 
         has_msm = self.min_save_ms is not None and self.min_save_ms > 0
         if has_msm and self.parent_timing is not None:
