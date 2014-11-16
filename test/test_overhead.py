@@ -3,6 +3,7 @@
 
 import timeit
 import unittest
+from clocked import cuuid
 from clocked.clockit import Clocked
 from clocked.decorators import clocked
 from clocked.profiler_provider import ProfilerProvider
@@ -41,7 +42,19 @@ class TestClocked(unittest.TestCase):
             _test()
         _test()
 
-    def test_comparison(self):
+    def test_comparison_normal_uuid(self):
+        cuuid.toggle_thread_unsafe_uuid(False)
+        print('normal uuid')
+        self._compare()
+        print('')
+
+    # def test_comparison_unsafe(self):
+    #     cuuid.toggle_thread_unsafe_uuid(True)
+    #     print('unsafe uuid')
+    #     self._compare()
+    #     print('')
+
+    def _compare(self):
         without = self.get_without()
         with_off = self.get_with_off()
         with_on = self.get_with_on()

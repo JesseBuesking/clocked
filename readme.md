@@ -111,5 +111,5 @@ Performance
 -----------
 
 To improve performance when testing single-threaded applications,
-enable faster uuid generation by setting
-``clocked.config.allow_thread_unsafe_uuid = True``
+enable faster uuid generation by turning on thread unsafe uuid generation with
+``clocked.cuuid.toggle_thread_unsafe_uuid(True)``

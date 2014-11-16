@@ -79,6 +79,7 @@ class StopWatch(object):
         self.start()
         return self
 
+    # noinspection PyUnusedLocal
     def __exit__(self, _type, value, traceback):
         """Stop timing.
 
@@ -92,4 +93,4 @@ class StopWatch(object):
         """
         self.stop()
         if _type:
-            raise type, value, traceback
+            raise
