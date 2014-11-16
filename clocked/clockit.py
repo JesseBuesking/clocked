@@ -42,7 +42,6 @@ class Clocked(object):
 
         If there was an exception inside the `with` block, re-raise it.
         """
-        # self.stop()
         profiler = Profiler.current()
         if profiler is not None:
             profiler.head.stop()

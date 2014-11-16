@@ -10,16 +10,16 @@ class Settings(object):
 
     profiler_provider = None
 
-    @classmethod
-    def ensure_profiler_provider(cls):
+    @staticmethod
+    def ensure_profiler_provider():
         """
         Makes sure that there's a profiler provider.
         """
-        if cls.profiler_provider is None:
-            cls.profiler_provider = ProfilerProvider()
+        if Settings.profiler_provider is None:
+            Settings.profiler_provider = ProfilerProvider()
 
-    @classmethod
-    def stopwatch_provider(cls):
+    @staticmethod
+    def stopwatch_provider():
         """
         Provides a stopwatch.
         """
