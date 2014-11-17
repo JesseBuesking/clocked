@@ -102,7 +102,7 @@ class TestDecorators(unittest.TestCase):
         Clocked.initialize('test function decorator')
 
         TestDecorators.TestFunctionObj.delay_method()
-        t = [i for i in Clocked.get('delay_method')]
+        t = [i for i in Clocked.get('test_clocked.delay_method.*')]
         self.assertEqual(1, len(t))
         t = t[0]
         self._assert(20-2, t.duration_milliseconds, 20+2)
@@ -119,7 +119,7 @@ class TestDecorators(unittest.TestCase):
         Clocked.initialize('test class decorator')
 
         TestDecorators.TestClassObj.delay_method()
-        t = [i for i in Clocked.get('delay_method')]
+        t = [i for i in Clocked.get('.*delay_method.*')]
         self.assertEqual(1, len(t))
         t = t[0]
         self._assert(20-2, t.duration_milliseconds, 20+2)
@@ -136,13 +136,12 @@ class TestDecorators(unittest.TestCase):
         Clocked.initialize('test function and class decorators')
 
         TestDecorators.TestFunctionAndClassObj.delay_method()
-        t = [i for i in Clocked.get('delay_method')]
+        t = [i for i in Clocked.get('.*delay_method.*')]
         self.assertEqual(1, len(t))
         t = t[0]
         self._assert(20-2, t.duration_milliseconds, 20+2)
 
     # noinspection PyDocstring
-    @clocked
     class TestFunctionAndClassObj(object):
 
         @classmethod
@@ -155,7 +154,7 @@ class TestDecorators(unittest.TestCase):
 
         to = TestDecorators.TestNotClassmethods()
         to.delay_method()
-        t = [i for i in Clocked.get('delay_method')]
+        t = [i for i in Clocked.get('.*delay_method.*')]
         self.assertEqual(1, len(t))
         t = t[0]
         self._assert(20-2, t.duration_milliseconds, 20+2)
@@ -171,7 +170,7 @@ class TestDecorators(unittest.TestCase):
         Clocked.initialize('test function and class decorators')
 
         TestDecorators.TestStaticMethod.delay_method()
-        t = [i for i in Clocked.get('delay_method')]
+        t = [i for i in Clocked.get('.*delay_method.*')]
         self.assertEqual(1, len(t))
         t = t[0]
         self._assert(20-2, t.duration_milliseconds, 20+2)

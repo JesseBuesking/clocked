@@ -1,5 +1,4 @@
-
-
+import re
 import sys
 from clocked.profiler import Profiler
 from clocked.settings import Settings
@@ -24,16 +23,16 @@ class Clocked(object):
 
     def __init__(self, name):
         self._name = name
+        self.profiler = Profiler.current()
 
     def __enter__(self):
         """
         Equivalent to Step.
         """
-        profiler = Profiler.current()
-        if profiler is None:
+        if self.profiler is None:
             return None
         else:
-            return profiler.step_impl(self._name)
+            return self.profiler.step_impl(self._name)
 
     # noinspection PyUnusedLocal
     def __exit__(self, _type, value, traceback):
@@ -42,9 +41,8 @@ class Clocked(object):
 
         If there was an exception inside the `with` block, re-raise it.
         """
-        profiler = Profiler.current()
-        if profiler is not None:
-            profiler.head.stop()
+        if self.profiler is not None:
+            self.profiler.head.stop()
 
         if _type:
             # re-raise any exceptions
@@ -59,7 +57,8 @@ class Clocked(object):
         """
         profiler = Profiler.current()
         for timing in profiler.get_timing_hierarchy():
-            if timing.name != name:
+            m = re.match('^' + name + '$', timing.name)
+            if m is None:
                 continue
 
             yield timing

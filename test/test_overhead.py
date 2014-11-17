@@ -10,7 +10,7 @@ from clocked.profiler_provider import ProfilerProvider
 from clocked.settings import Settings
 
 
-ITERATIONS = 100000
+ITERATIONS = 300000
 
 
 class TestClocked(unittest.TestCase):
